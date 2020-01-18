@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Text;
 
 namespace SecretSanta.Data
@@ -28,5 +30,8 @@ namespace SecretSanta.Data
         }
 
         public User? Santa { get; set; }
+
+        private DbSet _DbSet;
+        public DbSet DbSet { get => _DbSet; set => _DbSet = value ?? throw new ArgumentNullException(nameof(DbSet)); }
     }
 }
