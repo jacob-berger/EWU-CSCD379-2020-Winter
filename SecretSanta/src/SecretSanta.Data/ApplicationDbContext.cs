@@ -8,8 +8,10 @@ namespace SecretSanta.Data
 {
     public class ApplicationDbContext : DbContext
     {
+#nullable disable
         IHttpContextAccessor _IHttpContextAccessor;
         IHttpContextAccessor IHttpContextAccessor { get => _IHttpContextAccessor; set => _IHttpContextAccessor = value ?? throw new ArgumentNullException(nameof(IHttpContextAccessor)); }
+#nullable enable
         public ApplicationDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
             
@@ -22,7 +24,14 @@ namespace SecretSanta.Data
 
         public override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //Need to do something
+            if (modelBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(modelBuilder));
+            }
+
+            _ = modelBuilder.Entity<Link>().HasKey(link => new { link.User, link.Group });
+
+
         }
 
         public override int SaveChanges()
