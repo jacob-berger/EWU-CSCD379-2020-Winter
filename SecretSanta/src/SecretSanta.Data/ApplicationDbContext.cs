@@ -2,12 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SecretSanta.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Group> Groups { get; set; } = null!;
+        public DbSet<Gift> Gifts { get; set; } = null!;
 #nullable disable
         IHttpContextAccessor _IHttpContextAccessor;
         IHttpContextAccessor IHttpContextAccessor { get => _IHttpContextAccessor; set => _IHttpContextAccessor = value ?? throw new ArgumentNullException(nameof(IHttpContextAccessor)); }
@@ -22,26 +29,59 @@ namespace SecretSanta.Data
             IHttpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             if (modelBuilder is null)
             {
                 throw new ArgumentNullException(nameof(modelBuilder));
             }
 
-            _ = modelBuilder.Entity<Link>().HasKey(link => new { link.User, link.Group });
+            modelBuilder.Entity<Link>().HasKey(link => new { link.User, link.Group });
 
+            modelBuilder.Entity<Link>().HasOne(link => link.User).WithMany(link => link.Links).HasForeignKey(link => link.User.Id);
+
+            modelBuilder.Entity<Link>().HasOne(link => link.Group).WithMany(link => link.Links).HasForeignKey(link => link.GroupID);
 
         }
-
+        
         public override int SaveChanges()
         {
-            //Need to do something
+            AddFingerPrinting();
+            return base.SaveChanges();
         }
 
-        public override void OnModelCreating(Boolean boolean)
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            //Need to do something
+            AddFingerPrinting();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void AddFingerPrinting()
+        {
+            var added = ChangeTracker.Entries().Where(record => record.State == EntityState.Modified);
+
+            var modified = ChangeTracker.Entries().Where(record => record.State == EntityState.Added);
+
+            foreach (var record in added)
+            {
+                var entry = record.Entity as FingerPrintEntityBase;
+
+                if (entry != null)
+                {
+                    entry.CreatedBy = entry.ModifiedBy = _IHttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value ?? "";
+                    entry.CreatedOn = entry.ModifiedOn = DateTime.Now;
+                }
+            }
+
+            foreach (var record in modified)
+            {
+                var entry = record.Entity as FingerPrintEntityBase;
+
+                if (entry != null)
+                {
+                    entry.ModifiedBy = _IHttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value ?? "";
+                }
+            }
         }
     }
 }

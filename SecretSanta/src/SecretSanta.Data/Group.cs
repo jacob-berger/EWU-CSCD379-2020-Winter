@@ -19,9 +19,9 @@ namespace SecretSanta.Data
 			}
 		}
 
-		public ICollection<Link> Links { get; }
+		public ICollection<Link> Links { get; } = null!;
 
-		private DbSet _DbSet;
+		private DbSet _DbSet = null!;
 		public DbSet DbSet { get => _DbSet; set => _DbSet = value ?? throw new ArgumentNullException(nameof(DbSet)); }
 
 	}

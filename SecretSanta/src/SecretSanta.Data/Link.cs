@@ -8,5 +8,6 @@ namespace SecretSanta.Data
     {
 		public User User { get; set; }
 		public Group Group { get; set; }
+		public int GroupID { get; set; }
 	}
 }
