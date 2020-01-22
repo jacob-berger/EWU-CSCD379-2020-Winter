@@ -12,22 +12,19 @@ namespace SecretSanta.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; } = null!;
-        public DbSet<Group> Groups { get; set; } = null!;
-        public DbSet<Gift> Gifts { get; set; } = null!;
-#nullable disable
+        public DbSet<User> Users { get; }
+        public DbSet<Group> Groups { get; }
+        public DbSet<Gift> Gifts { get; }
         IHttpContextAccessor _IHttpContextAccessor;
         IHttpContextAccessor IHttpContextAccessor { get => _IHttpContextAccessor; set => _IHttpContextAccessor = value ?? throw new ArgumentNullException(nameof(IHttpContextAccessor)); }
-#nullable enable
-        public ApplicationDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
-        {
-            
-        }
+#nullable disable
+        public ApplicationDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
         public ApplicationDbContext(DbContextOptions dbContextOptions, IHttpContextAccessor httpContextAccessor) : base(dbContextOptions)
         {
             IHttpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
+#nullable enable
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

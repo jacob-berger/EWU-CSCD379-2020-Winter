@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace SecretSanta.Data.Tests
 {
@@ -18,14 +21,10 @@ namespace SecretSanta.Data.Tests
             IServiceCollection serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder =>
             {
-                builder.AddConsole()
-                    .AddFilter(DbLoggerCategory.Database.Command.Name,
-                        LogLevel.Information);
+                builder.AddConsole().AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information);
             });
-            return serviceCollection.BuildServiceProvider().
-                GetService<ILoggerFactory>();
+            return serviceCollection.BuildServiceProvider().GetService<ILoggerFactory>();
         }
-
         [TestInitialize]
         public void OpenConnection()
         {
@@ -38,8 +37,10 @@ namespace SecretSanta.Data.Tests
                 .EnableSensitiveDataLogging()
                 .Options;
 
-            using var context = new ApplicationDbContext(Options);
-            context.Database.EnsureCreated();
+            using (var context = new ApplicationDbContext(Options))
+            {
+                context.Database.EnsureCreated();
+            }
         }
 
         [TestCleanup]

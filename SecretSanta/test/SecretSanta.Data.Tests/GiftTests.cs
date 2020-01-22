@@ -1,6 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SecretSanta.Data.Tests
@@ -9,56 +10,41 @@ namespace SecretSanta.Data.Tests
     public class GiftTests : TestBase
     {
         [TestMethod]
-        public async Task Gift_CanBeCreate_AllPropertiesGetSet()
+        public async Task Gift_CreatedForeignRelation_Sucess()
         {
-            // Arrange
-            var user = new User
-            {
-                Id = 0,
-                FirstName = "Inigo",
-                LastName = "Montoya",
-                CreatedBy = "ImMontoya"
-            };
-
+            //Arrange
             var gift = new Gift
             {
-                Id = 0,
-                Title = "Ring 2",
-                Description = "Amazing way to keep the creepers away",
-                Url = "www.ring.com",
-                CreatedBy = "ImMontoya"
+                Title = "Title",
+                Description = "Description",
+                Url = "Url"
             };
 
-            // Act
-
-            // Assert
-            using (ApplicationDbContext dbContext = new ApplicationDbContext(Options)
+            var user = new User
             {
+                FirstName = "FirstName",
+                LastName = "LastName",
+                Santa = null,
+                Gifts = new List<Gift>(),
+                Links = new List<Link>()
+            };
 
+            //Act
+            gift.User = user;
+            using (ApplicationDbContext dbContext = new ApplicationDbContext(Options))
+            {
+                dbContext.Add(gift);
+                await dbContext.SaveChangesAsync();
             }
-        }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Gift_SetTitleToNull_ThrowsArgumentNullException()
-        {
-            Gift gift = new Gift(1, null!, "Amazing way to keep the creepers away", "www.ring.com", new User(1, "Inigo", "Montoya", new List<Gift>()));
-
-
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Gift_SetDescriptionToNull_ThrowsArgumentNullException()
-        {
-            Gift gift = new Gift(1, "Ring 2", null!, "www.ring.com", new User(1, "Inigo", "Montoya", new List<Gift>()));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Gift_SetUrlToNull_ThrowsArgumentNullException()
-        {
-            Gift gift = new Gift(1, "Ring 2", "Amazing way to keep the creepers away", null!, new User(1, "Inigo", "Montoya", new List<Gift>()));
+            //Assert
+            using (ApplicationDbContext dbContext = new ApplicationDbContext(Options))
+            {
+                var gifts = await dbContext.Gifts.Include(g => g.User).ToListAsync();
+                Assert.AreEqual(1, gifts.Count);
+                Assert.AreEqual(gift.Title, gifts[0].Title);
+                Assert.AreNotEqual(0, gifts[0].Id);
+            }
         }
     }
 }
