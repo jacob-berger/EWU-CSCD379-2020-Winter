@@ -1,3 +1,4 @@
+[![Build Status](https://dev.azure.com/jberger8/CSCD379-2020-Winter/_apis/build/status/jacob-berger.EWU-CSCD379-2020-Winter?branchName=master)](https://dev.azure.com/jberger8/CSCD379-2020-Winter/_build/latest?definitionId=2&branchName=master)
 # Assignment
 
 The purpose of this assignment is to learn the following:
