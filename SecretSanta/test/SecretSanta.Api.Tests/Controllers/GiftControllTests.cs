@@ -1,26 +1,28 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta.Api.Controllers;
 using SecretSanta.Business;
+using SecretSanta.Business.Dto;
 using SecretSanta.Data;
 using System;
 
 namespace SecretSanta.Api.Tests.Controllers
 {
     [TestClass]
-    public class GiftControllTests : BaseApiControllerTests<Gift, GiftInMemoryService>
+    public class GiftControllTests : BaseApiControllerTests<Business.Dto.Gift, GiftInput, Data.Gift>
     {
-        protected override BaseApiController<Gift> CreateController(GiftInMemoryService service)
-            => new GiftController(service);
+        protected override Business.Dto.Gift CreateDto()
+        {
+            throw new NotImplementedException();
+        }
 
-        protected override Gift CreateEntity()
-            => new Gift(Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                new User(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
-    }
+        protected override Data.Gift CreateEntity()
+        {
+            throw new NotImplementedException();
+        }
 
-    public class GiftInMemoryService : InMemoryEntityService<Gift>, IGiftService
-    {
-
+        protected override GiftInput CreateInput()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

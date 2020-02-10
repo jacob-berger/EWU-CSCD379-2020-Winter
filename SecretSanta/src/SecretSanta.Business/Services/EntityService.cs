@@ -27,7 +27,7 @@ namespace SecretSanta.Business.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            TEntity entity = await Query.FirstOrDefaultAsync(x => x.Id == id);
+            TEntity entity = await DbContext.FindAsync<TEntity>(id);
             if (entity is { })
             {
                 DbContext.Remove(entity);
