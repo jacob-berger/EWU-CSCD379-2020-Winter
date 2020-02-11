@@ -1,5 +1,5 @@
-﻿using SecretSanta.Web.Api;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SecretSanta.Web.Api;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,7 +23,7 @@ namespace SecretSanta.Web.Controllers
         // GET: Group
         public async Task<ActionResult> Index()
         {
-            HttpClient httpClient = ClientFactory.CreateClient("BlogApi");
+            HttpClient httpClient = ClientFactory.CreateClient("SecretSantaApi");
 
             var client = new GroupClient(httpClient);
             ICollection<Group> groups = await client.GetAllAsync();

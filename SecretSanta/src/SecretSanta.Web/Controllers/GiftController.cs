@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SecretSanta.Web.Controllers
 {
-    public class UserController : Controller
+    public class GiftController : Controller
     {
-        public UserController(IHttpClientFactory clientFactory)
+        public GiftController(IHttpClientFactory clientFactory)
         {
             if (clientFactory is null)
             {
@@ -20,14 +20,14 @@ namespace SecretSanta.Web.Controllers
 
         public IHttpClientFactory ClientFactory { get; }
 
-        // GET: User
+        // GET: Gift
         public async Task<ActionResult> Index()
         {
             HttpClient httpClient = ClientFactory.CreateClient("SecretSantaApi");
 
-            var client = new UserClient(httpClient);
-            ICollection<User> users = await client.GetAllAsync();
-            return View(users);
+            var client = new GiftClient(httpClient);
+            ICollection<Gift> gifts = await client.GetAllAsync();
+            return View(gifts);
         }
     }
 }
