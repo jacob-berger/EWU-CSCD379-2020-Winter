@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SecretSanta.Api.Tests
 {
-    public class SampleData
+    public static class SampleData
     {
         public const string Inigo = "Inigo";
         public const string Montoya = "Montoya";
@@ -17,5 +17,11 @@ namespace SecretSanta.Api.Tests
         public const string Buttercup = "Buttercup";
 
         public static User CreatePrincessButtercup() => new User(Princess, Buttercup);
+
+        public const string GameboyTitle = "Gameboy";
+        public const string GameboyDescription = "Handheld game console";
+        public const string GameboyUrl = "nintendo.com";
+
+        public static Gift CreateGameboy() => new Gift(GameboyTitle, GameboyUrl, GameboyDescription, CreateInigoMontoya());
     }
 }

@@ -12,12 +12,15 @@ namespace SecretSanta.Business
             CreateMap<User, User>().ForMember(property => property.Id, option => option.Ignore());
 
             CreateMap<Gift, Dto.Gift>();
+            CreateMap<Gift, Dto.GiftInput>();
             CreateMap<Dto.GiftInput, Gift>();
 
             CreateMap<User, Dto.User>();
+            CreateMap<User, Dto.UserInput>();
             CreateMap<Dto.UserInput, User>();
 
             CreateMap<Group, Dto.Group>();
+            CreateMap<Group, Dto.GroupInput>();
             CreateMap<Dto.GroupInput, Group>();
         }
 

@@ -41,7 +41,7 @@ namespace SecretSanta.Api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] TInputDto value)
         {
-            TDto entity = await Service.UpdateAsync(id, value);
+            TDto? entity = await Service.UpdateAsync(id, value);
 
             if (entity is null)
             {
