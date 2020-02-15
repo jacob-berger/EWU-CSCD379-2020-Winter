@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using SecretSanta.Business;
 using SecretSanta.Business.Services;
 using SecretSanta.Data;
+using Microsoft.Extensions;
+using Microsoft.Extensions.Configuration;
 
 namespace SecretSanta.Api
 {
@@ -17,9 +19,14 @@ namespace SecretSanta.Api
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public static void ConfigureServices(IServiceCollection services)
+        private IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
         {
-            services.AddMvc(options => options.EnableEndpointRouting = false);
+            Configuration = configuration;
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
             services.AddSwaggerDocument();
 
             services.AddScoped<IGiftService, GiftService>();
@@ -28,9 +35,12 @@ namespace SecretSanta.Api
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.EnableSensitiveDataLogging()
-                       .UseSqlite("Data Source=SecretSanta.db"));
+                       .UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
 
             services.AddAutoMapper(new[] { typeof(AutomapperConfigurationProfile).Assembly });
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +54,10 @@ namespace SecretSanta.Api
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
-            app.UseMvc();
+            app.UseEndpoints(endpoint =>
+            {
+                endpoint.MapDefaultControllerRoute();
+            });
         }
     }
 }
