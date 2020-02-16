@@ -37,7 +37,6 @@ namespace SecretSanta.Api
                 options.EnableSensitiveDataLogging()
                        .UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
-
             services.AddAutoMapper(new[] { typeof(AutomapperConfigurationProfile).Assembly });
 
             services.AddControllers();
@@ -53,6 +52,7 @@ namespace SecretSanta.Api
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
+            app.UseRouting();
 
             app.UseEndpoints(endpoint =>
             {
