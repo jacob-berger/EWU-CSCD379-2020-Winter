@@ -15,14 +15,14 @@ For this assignment you will be adding CRUD functionality in the SecretSanta.Web
     //- Generated code should be in the `SecretSanta.Web.Api` namespace
     //- Generated clients should have generated interfaces
     //- Generated code should not use the base url for the request
-  - Create an _Layout.cshtml file and put the "Chrome" for the application within it (this should include the navigation that allows one to get Home, Users, Gifts, Groups)
-    - All pages created should use this _Layouts file
-  - Create Create, Edit, Delete pages for Users, Gifts, Groups
-    - Display validation errors if any occur (server side validation)
+  //- Create an _Layout.cshtml file and put the "Chrome" for the application within it (this should include the navigation that allows one to get Home, Users, Gifts, Groups)
+    //- All pages created should use this _Layouts file
+  //- Create Create, Edit, Delete pages for Users, Gifts, Groups
+    //- Display validation errors if any occur (server side validation)
   //- Enable TagHelpers functionality and move all namespaces into the _ViewImports file
-  - Configure webpack so that all style assets get created and copied into the wwwroot folder
-    - Should auto-generate the _Layouts.cshtml from the _LayoutsTemplate.cshtml file
-    - Should have bulma added as the css framework and using the scss version of the assets
+  //- Configure webpack so that all style assets get created and copied into the wwwroot folder
+    //- Should auto-generate the _Layouts.cshtml from the _LayoutsTemplate.cshtml file
+   // - Should have bulma added as the css framework and using the scss version of the assets
 
 ## Extra Credit
 - Add client side validation of fields
