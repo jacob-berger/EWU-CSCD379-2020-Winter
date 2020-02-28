@@ -1,168 +1,43 @@
-﻿
-import './secretsanta-client.ts'
-import { GiftClient, GiftInput, UserClient, UserInput, User } from "./secretsanta-client"
+﻿import { Gift, GiftClient, IGiftClient } from "./secretsanta-client";
 
 export class App {
-    async getAllGifts() {
-        var client = new GiftClient();
-        var gifts = await client.getAll();
-        return gifts;
-    }
 
-    async searchGifts(searchTerm) {
-        var client = new GiftClient();
-        var gifts = await client.search(searchTerm);
-        //var gifts = await client.getAll();
-        return gifts;
-    }
+    async renderGifts() {
+        var gifts = await this.getGifts();
 
-    async getGift(id) {
-        var client = new GiftClient();
-        return await client.get(id);
-    }
-
-    async getUser(id) {
-        var client = new UserClient();
-        return await client.get(id);
-    }
-
-    async deleteAllGifts() {
-        var client = new GiftClient();
-        var gifts = await client.getAll();
-        for (var i in gifts) {
-            await client.delete(gifts[i].id);
-        }
-    }
-
-    async deleteAllUsers() {
-        var client = new UserClient();
-        var users = await client.getAll();
-        for (var i in users) {
-            await client.delete(users[i].id);
-        }
-    }
-
-    async createGiftsCylonDetectors(userId, n) {
-        var client = new GiftClient();
-        var gift = new GiftInput();
-        gift.title = "Cylon Detector";
-        gift.description = "Version 1.0";
-        gift.url = "www.find-a-cylon.com";
-        gift.userId = userId;
-
-        for (var i = 0; i < n; i++) {
-            await client.post(gift);
-        }
-
-    }
-
-    async createGiftCylonDetector(userId) {
-        var client = new GiftClient();
-        var gift = new GiftInput();
-        gift.title = "Cylon Detector";
-        gift.description = "Version 1.0";
-        gift.url = "www.find-a-cylon.com";
-        gift.userId = userId;
-        return await client.post(gift);
-    }
-    async createGiftViper(userId) {
-        var client = new GiftClient();
-        var gift = new GiftInput();
-        gift.title = "Viper";
-        gift.description = "Fast Spaceship";
-        gift.url = "www.vipers.com";
-        gift.userId = userId;
-        return await client.post(gift);
-    }
-
-    async createUserKaraThrace() {
-        var client = new UserClient();
-        var user = new UserInput();
-        user.firstName = "Kara";
-        user.lastName = "Thrace";
-        return await client.post(user);
-    }
-
-    async createUserGaiusBaltar() {
-        var client = new UserClient();
-        var user = new UserInput();
-        user.firstName = "Gaius";
-        user.lastName = "Baltar";
-        return await client.post(user);
-    }
-}
-
-var app = new App();
-var listId = "list-Gifts";
-
-document.getElementById("giftSearchButton").addEventListener("click", function (e) {
-    var searchTerm = (<HTMLInputElement>document.getElementById("giftSearchText")).value;
-    console.log("searchTerm: " + searchTerm);
-
-    document.getElementById(listId).innerHTML = "";
-    var loadingItem = document.createElement("li");
-    loadingItem.textContent = "Loading...";
-    document.getElementById(listId).appendChild(loadingItem);
-
-    app.searchGifts(searchTerm).then(function (value) {
-
-        console.log("gifts: ", value);
-        if (document.getElementById(listId) != null) {
-            document.getElementById(listId).removeChild(loadingItem);
-        }
-
-
-        if (document.getElementById(listId) != null) {
-            var listItem = document.createElement("li");
-            listItem.textContent = value.title + " " + value.description + " " + value.url;
-            document.getElementById(listId).appendChild(listItem);
-        }
-
-
-
-    }).catch(function () {
-        if (document.getElementById(listId) != null) {
-            document.getElementById(listId).removeChild(loadingItem);
-        }
-    });
-})
-
-
-
-if (document.getElementById(listId) != null) {
-    var loadingItem = document.createElement("li");
-    loadingItem.textContent = "Loading...";
-    document.getElementById(listId).appendChild(loadingItem);
-}
-
-app.deleteAllGifts().then(function () {
-
-    app.deleteAllUsers();
-
-}).then(function () {
-
-    var user = null;
-    app.createUserGaiusBaltar().then(function (value) {
-        console.log("created user: ", value);
-        user = value;
-        app.createGiftsCylonDetectors(value.id, 5).then(function () {
-            app.getAllGifts().then(function (value) {
-
-                console.log("gifts: ", value);
-                if (document.getElementById(listId) != null) {
-                    document.getElementById(listId).removeChild(loadingItem);
-                }
-                for (var j in value) {
-
-                    if (document.getElementById(listId) != null) {
-                        var listItem = document.createElement("li");
-                        listItem.textContent = value[j].title + " " + value[j].description + " " + value[j].url + " user: " + user.firstName + " " + user.lastName;
-                        document.getElementById(listId).appendChild(listItem);
-                    }
-
-                }
-            });
+        const list = document.getElementById("giftList");
+        gifts.forEach(gift => {
+            const item = document.createElement("li");
+            item.textContent = `${gift.id}:${gift.title}:${gift.description}:${gift.url}`
+            list.append(item);
         })
-    });
+    }
 
-});
+    giftClient: IGiftClient;
+    constructor(giftClient: IGiftClient = new GiftClient()) {
+        this.giftClient = giftClient;
+    }
+
+    async getGifts() {
+        var gifts = await this.giftClient.getAll();
+        return gifts;
+    }
+
+    async deleteGifts() {
+        var gifts = await this.getGifts();
+
+        for (var ix = 0; ix < gifts.length; ix++) {
+            await this.giftClient.delete(gifts[ix].id);
+        }
+    }
+
+    async generateGifts() {
+        await this.deleteGifts();
+
+        let gifts: Gift[];
+        for (var ix = 0; ix < 10; ix++) {
+            var gift = new Gift({ title: "Title", description: "Description", url: "www.ewu.edu", userId: 1, id: ix })
+            this.giftClient.post(gift);
+        }
+    }
+}
