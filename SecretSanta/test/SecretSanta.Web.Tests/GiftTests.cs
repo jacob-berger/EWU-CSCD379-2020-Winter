@@ -18,7 +18,7 @@ namespace SecretSanta.Web.Tests
         [NotNull]
         private IWebDriver? Driver { get; set; }
 
-        string AppURL { get; } = "http://www.bing.com/";
+        string AppURL { get; } = "https://localhost:44394/";
 
         [TestInitialize]
         public void TestInitialize()
