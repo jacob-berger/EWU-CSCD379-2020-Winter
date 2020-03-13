@@ -13,4 +13,4 @@ $SecretSantaWebServer = Start-WebServer -ProjectName 'SecretSanta.Web' -Port 500
 
 dotnet test "$PSScriptRoot\test\SecretSanta.Web.Tests\"
 
-$SecretSantaApiServer, $SecretSantaWebServer | Stop-Process
+$SecretSantaApiServer, $BlogEngineWebServer | Stop-Process
